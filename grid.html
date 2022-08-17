@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewproductrt" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/muuri@0.9.5/dist/muuri.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web-animations-js@2.3.2/web-animations.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="grid.css">
+  <script src="grid.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div class="grid__wrap">
+    <div class="flex">
+      <div>
+        <h3 id="labe" draggable="true" class="library">라이브러리</h3>
+        <div class="library__btn__wrap">
+          <div class="library__btn" onclick="libraryLoad();">상품</div>
+          <div class="library__btn">이미지</div>
+          <div class="library__btn">비디오</div>
+          
+        </div>
+        <div style="display: flex;">
+          <div class="container product-grid">
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3>상품 진열 그리드</h3>
+        <div class="flex" style="margin: 10px 0;">
+          <div class="apply__btn">임시 불러오기</div>
+          <div class="apply__btn">임시 저장</div>
+          <div class="apply__btn" onclick="gridApplyBtn();">전체 저장</div>
+          <div class="apply__btn" id="reset">초기화</div>
+
+        </div>
+        <section class="grid-demo">
+          <div style="display: flex; gap: 10px;">
+            <div id="product" class="add-more-items btn btn-primary product" style="width: 130px;">1 x 1 추가</div>
+            <div id="img" class="add-more-items btn btn-primary img" style="width: 130px;">2 x 1 추가</div>
+            <input class="box__rgb__input" type="text" placeholder="ex) #606060" value="#606060">
+            <div id="boxBgBtn" class="add-more-items btn btn-primary img" style="width: 130px;">박스 배경색 변경</div>
+           
+          </div>
+          <div class="controls cf" style="display: none;">
+            <div class="control search">
+              <div class="control-icon">
+                <i class="material-icons">&#xE8B6;</i>
+              </div>
+              <input class="control-field search-field form-control " type="text" name="search"
+                placeholder="Search..." />
+            </div>
+            <div class="control filter">
+              <div class="control-icon">
+                <i class="material-icons">&#xE152;</i>
+              </div>
+              <div class="select-arrow">
+                <i class="material-icons">&#xE313;</i>
+              </div>
+              <select class="control-field filter-field form-control">
+                <option value="" checked>All</option>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+              </select>
+            </div>
+            <div class="control sort">
+              <div class="control-icon">
+                <i class="material-icons">&#xE164;</i>
+              </div>
+              <div class="select-arrow">
+                <i class="material-icons">&#xE313;</i>
+              </div>
+              <select class="control-field sort-field form-control">
+                <option value="order" checked>Drag</option>
+                <option value="title">Title (drag disabled)</option>
+                <option value="color">Color (drag disabled)</option>
+              </select>
+            </div>
+            <div class="control layout">
+              <div class="control-icon">
+                <i class="material-icons">&#xE871;</i>
+              </div>
+              <div class="select-arrow">
+                <i class="material-icons">&#xE313;</i>
+              </div>
+              <select class="control-field layout-field form-control">
+                <option value="left-top" checked>Left Top</option>
+                <option value="left-top-fillgaps">Left Top (fill gaps)</option>
+                <option value="right-top">Right Top</option>
+                <option value="right-top-fillgaps">Right Top (fill gaps)</option>
+                <option value="left-bottom">Left Bottom</option>
+                <option value="left-bottom-fillgaps">Left Bottom (fill gaps)</option>
+                <option value="right-bottom">Right Bottom</option>
+                <option value="right-bottom-fillgaps">Right Bottom (fill gaps)</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid"></div>
+          <div class="grid-footer">
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="flex" style="flex-grow: 1;">
+      <form action="product-result.html" name="productInfoForm" method="post">
+        <div style="flex-grow: 1;">
+          <h3>상품별 상세수정</h3>
+          <div class="" style="display: flex; gap: 10px;margin-bottom:10px;margin: 0 10px;">
+            <input class="rgb__input" type="text" placeholder="ex) #606060" value="#606060">
+            <div id="bg__change__btn" class="apply__btn">배경색 저장</div>
+          </div>
+          <div class="product-wrap" style="background-color:#606060; ">
+            <div id="grid1" class="category-position" data-position="" data-idx="1"></div>
+            <div id="grid2" class="category-position" data-position="" data-idx="2"></div>
+            <div id="grid3" class="category-position" data-position="" data-idx="3"></div>
+            <div id="grid4" class="category-position" data-position="" data-idx="4"></div>
+            <div id="grid5" class="category-position" data-position="" data-idx="5"></div>
+            <div id="grid6" class="category-position" data-position="" data-idx="6"></div>
+            <div id="grid7" class="category-position" data-position="" data-idx="7"></div>
+            <div id="grid8" class="category-position" data-position="" data-idx="8"></div>
+            <div id="grid9" class="category-position" data-position="" data-idx="9"></div>
+            <div id="grid10" class="category-position" data-position="" data-idx="10"></div>
+            <div id="grid11" class="category-position" data-position="" data-idx="11"></div>
+            <div id="grid12" class="category-position" data-position="" data-idx="12"></div>
+            <div id="grid13" class="category-position" data-position="" data-idx="13"></div>
+            <div id="grid14" class="category-position" data-position="" data-idx="14"></div>
+          </div>
+          <div class="flex" style="gap: 10px;justify-content: space-between;padding: 10px;">
+            <div class="flex align-btn">
+              <div onclick="alignClick(event);" data-position="left" class="product-align-btn">왼쪽</div>
+              <div onclick="alignClick(event);" data-position="center" class="product-align-btn">가운데</div>
+              <div onclick="alignClick(event);" data-position="right" class="product-align-btn">오른쪽</div>
+            </div>
+          </div>
+          <div class="product-info-wrap">
+            <div id="category1" data-category="price" class="category-btn" draggable="true">가격</div>
+            <div id="category2" data-category="productName" class="category-btn" draggable="true">상품명</div>
+            <div id="category3" data-category="color" class="category-btn" draggable="true">색상</div>
+            <div id="category4" data-category="like" class="category-btn" draggable="true">좋아요</div>
+            <div id="category5" data-category="discount" class="category-btn" draggable="true">할인가</div>
+            <div id="category6" data-category="basket" class="category-btn" draggable="true">장바구니</div>
+          </div>
+          <div class="flex" style="gap: 10px;justify-content: space-between;padding: 10px;">
+            <div class="apply__btn" id="prdocutReset">상세수정초기화</div>
+            <div class="apply__btn" onclick="applyProductBtn();">상세수정저장</div>
+          </div>
+        </div>
+      </form>
+      <div style="flex-grow: 1;">
+        <h3>모바일 미리보기</h3>
+        <div>
+          <div class="mobile-preview-header">
+            <div class="option-btn">아웃핏</div>
+            <div class="option-btn">상품</div>
+            <div class="option-btn setGrid">3 x 3</div>
+          </div>
+          <div class="mobile-preview-wrap two-grid">
+            <div>
+              <div class="mobile-preview">
+              </div>
+            </div>
+            <div class="one__wrap">
+              <div class="mobile-preview">
+              </div>
+            </div>
+            <div class="one__wrap">
+              <div class="mobile-preview">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/muuri@0.9.3/dist/muuri.min.js"></script>
+
+</head>
+
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .order {
+        position: sticky;
+        background-color: lightblue;
+        top: 0px;
+        padding: 10px;
+        color: black;
+        font-family: monospace;
+        z-index: 100;
+    }
+
+    .wrapper {
+        display: flex;
+        justify-content: space-around;
+        padding: 50px 30px;
+    }
+
+    .grid {
+        flex: 0 0 605px;
+        position: relative;
+        border: 2px solid lightgreen;
+        width: 605px;
+    }
+
+    .item {
+        position: absolute;
+        display: block;
+        z-index: 1;
+        width: 150px;
+        height: 150px;
+        padding: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #929796;
+        transition: background-color 0.3s;
+    }
+
+    .item-drag-handle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        cursor: move;
+    }
+
+    .item-resize-handler {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+
+
+    .item.muuri-item-dragging {
+        z-index: 3;
+    }
+
+    .item.muuri-item-releasing {
+        z-index: 2;
+    }
+
+    .item.muuri-item-hidden {
+        z-index: 0;
+    }
+
+    .item-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .s1x2 {
+        width: 150px;
+        height: 300px;
+        grid-column-end: span 1;
+        grid-row-end: span 2;
+    }
+
+    .s2x1 {
+        width: 300px;
+        height: 150px;
+        grid-column-end: span 2;
+        grid-row-end: span 1;
+    }
+
+    .s2x2 {
+        height: 300px;
+        width: 300px;
+        grid-column-end: span 2;
+        grid-row-end: span 2;
+    }
+
+    .s2x3 {
+        width: 300px;
+        height: 450px;
+        grid-column-end: span 2;
+        grid-row-end: span 3;
+    }
+
+    .s3x3 {
+        width: 450px;
+        height: 450px;
+        grid-column-end: span 3;
+        grid-row-end: span 3;
+    }
+
+    .s3x1 {
+        width: 450px;
+        grid-column-end: span 3;
+        grid-row-end: span 1;
+    }
+
+    .s3x2 {
+        width: 450px;
+        height: 300px;
+        grid-column-end: span 3;
+        grid-row-end: span 2;
+    }
+
+    .s1x3 {
+        height: 450px;
+        grid-column-end: span 1;
+        grid-row-end: span 3;
+    }
+
+    .item-content {
+        background-color: #333;
+        border-radius: 5px;
+        padding: 1em;
+    }
+
+
+    /* CSS GRID */
+
+    .css-grid {
+        width: 100%;
+        display: grid;
+        width: 605px;
+        grid-auto-flow: dense;
+        padding: 0;
+        flex: 0 0 605px;
+        border: 2px solid pink;
+        grid-auto-rows: 150px;
+        grid-template-columns: 150px 150px 150px 150px;
+    }
+
+    .css-grid .item {
+        position: relative !important;
+    }
+</style>
+
+<body>
+
+    <div class="order"></div>
+
+    <div class="wrapper">
+
+        <div class="grid">
+        </div>
+
+        <div class="css-grid">
+
+        </div>
+    </div>
+</body>
+
+<script>
+    const items = [
+        '1x1',
+        '1x1',
+        '2x2',
+        '2x2',
+        '1x2',
+        '2x1',
+        '3x2',
+        '1x1',
+        '1x1',
+        '3x1',
+        '1x1',
+        '1x1',
+        '2x2',
+        '4x1'
+    ]
+
+    document.querySelector('.grid').innerHTML = items.map((i, idx) => `
+<div data-id="${idx}" class="item s${i}">
+	<div class="item-content">
+		Item ${idx}
+		<div class="item-drag-handle"></div>
+		<div class="item-resize-handler">
+			<select>
+				<option ${i === '1x1' ? 'selected' : ''} value="1x1">1x1</option>
+				<option ${i === '1x2' ? 'selected' : ''} value="1x2">1x2</option>
+				<option ${i === '1x3' ? 'selected' : ''} value="1x3">1x3</option>
+				<option ${i === '2x1' ? 'selected' : ''} value="2x1">2x1</option>
+				<option ${i === '2x2' ? 'selected' : ''} value="2x2">2x2</option>
+				<option ${i === '2x3' ? 'selected' : ''} value="2x3">2x3</option>
+				<option ${i === '3x1' ? 'selected' : ''} value="3x1">3x1</option>
+				<option ${i === '3x2' ? 'selected' : ''} value="3x2">3x2</option>
+				<option ${i === '3x3' ? 'selected' : ''} value="3x3">3x3</option>
+			</select>
+		</div>
+	</div>
+</div>
+`).join('')
+
+    var grid = new Muuri(".grid", {
+        layout: {
+            fillGaps: true
+        },
+        dragHandle: '.item-drag-handle',
+        dragSortPredicate: {
+            threshold: 50,
+            action: "swap"
+        },
+        dragEnabled: true
+    });
+
+
+    document.querySelectorAll('.grid .item').forEach(it => {
+        it.querySelector('select').addEventListener('change', e => {
+            it.className = `item s${e.target.value}`
+            grid.refreshItems()
+            grid.layout();
+
+            const order = grid
+                .getItems()
+                .map((el) => el.getElement().getAttribute("data-id"));
+
+            renderCssGrid(order);
+            orderDiv.textContent = order.join(", ");
+        })
+    })
+
+    const orderDiv = document.querySelector(".order");
+
+    const order = grid
+        .getItems()
+        .map((el) => el.getElement().getAttribute("data-id"));
+
+    renderCssGrid(order);
+
+    orderDiv.textContent = order.join(", ");
+
+    grid.on("dragEnd", function (item, event) {
+        const order = grid
+            .getItems()
+            .map((el) => el.getElement().getAttribute("data-id"));
+
+        orderDiv.textContent = order.join(", ");
+
+        try {
+            renderCssGrid(order);
+        } catch (err) {
+            console.log(err);
+        }
+        console.log(event);
+        console.log(item);
+    });
+
+    function renderCssGrid(order) {
+        const html = order.map((id) => {
+            const size =
+                document
+                    .querySelector(`.item[data-id="${id}"]`)
+                    .className.split(" ")
+                    .find((cl) => cl.startsWith("s")) || "s1x1";
+
+            console.log(id, size);
+
+            return `
+<div data-id="${id}" class="item ${size}">
+<div class="item-content">
+	Item ${id}
+</div>
+</div>
+`;
+        });
+
+        document.querySelector(".css-grid").innerHTML = html.join("");
+    }
+
+
+</script>
+
+
+</html>
